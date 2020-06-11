@@ -13,26 +13,21 @@ from tf.transformations import *
 from naming import *
 from conversions import *
 
-models_paths = [os.path.expanduser('~/.gazebo/models/')]
+import rospkg
 
-if 'GAZEBO_MODEL_PATH' in os.environ:
-  model_path_env = os.environ['GAZEBO_MODEL_PATH'].split(':')
-  models_paths = models_paths + model_path_env
+rospack = rospkg.RosPack()
 
-mesh_path_env_name='MESH_WORKSPACE_PATH'
-if mesh_path_env_name in os.environ:
-  catkin_ws_path = os.environ[mesh_path_env_name]
-else:
-  catkin_ws_path = os.path.expanduser('~') + '/catkin_ws/src/'
-supported_sdf_versions = [1.4, 1.5, 1.6]
+gazebo2rviz_path = rospack.get_path('gazebo2rviz')
+catkin_ws_path = os.path.join(gazebo2rviz_path, 'meshes')
+models_paths = [catkin_ws_path]
 
 catkin_ws_path_exists = os.path.exists(catkin_ws_path)
+supported_sdf_versions = [1.4, 1.5, 1.6]
 
 if not catkin_ws_path_exists:
   print ('----------------------------------------------------------')
   print ('Path (%s) does not exist.' % catkin_ws_path)
-  print ('Please either set/change %s, or change ' % mesh_path_env_name)
-  print ('the catkin_ws_path variable inside pysdf/parse.py')
+  print ('Please change the catkin_ws_path variable inside pysdf/parse.py')
   print ('----------------------------------------------------------')
   sys.exit(1)
 
